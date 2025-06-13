@@ -29,11 +29,12 @@ import (
 
 
 type Cron struct {
-	minute string
-	hour string
-	monthDay string
-	month string
-	weekDay string
+	mask string
+	minute map[int]bool
+	hour map[int]bool
+	monthDay map[int]bool
+	month map[int]bool
+	weekDay map[int]bool
 }
 
 // General cron regex patterns
@@ -89,6 +90,74 @@ func checkGeneralCronRegex(cronString string) bool {
 	return generalCronRegex.MatchString(cronString)
 }
 
+// Get all the matching values for a cron field
+func getMinutes(minute string) map[int]bool {
+	if rangeRegex.MatchString(minute) {
+		_ = 0
+	} else if singleValueRegex.MatchString(minute) {
+		_ = 0
+	} else if listRegex.MatchString(minute) {
+		_ = 0
+	}
+	return make(map[int]bool) // Placeholder return, should be replaced with actual logic
+	panic(fmt.Sprintf("Invalid minute value '%s' in cron expression", minute))
+}
+
+func getHours(hour string) map[int]bool {
+	if rangeRegex.MatchString(hour) {
+		_ = 0
+	} else if singleValueRegex.MatchString(hour) {
+		_ = 0
+	} else if listRegex.MatchString(hour) {
+		_ = 0
+	}
+	return make(map[int]bool) // Placeholder return, should be replaced with actual logic
+	panic(fmt.Sprintf("Invalid hour value '%s' in cron expression", hour))
+}
+
+func getMonthDays(monthDay string, month string) map[int]bool {
+	if rangeRegex.MatchString(monthDay) {
+		_ = 0
+	} else if singleValueRegex.MatchString(monthDay) {
+		_ = 0
+	} else if listRegex.MatchString(monthDay) {
+		_ = 0
+	} else if monthDay == "*" {
+		_ = 0
+	}
+	return make(map[int]bool) // Placeholder return, should be replaced with actual logic
+	panic(fmt.Sprintf("Invalid month day value '%s' in cron expression", monthDay))
+}
+
+func getMonths(month string) map[int]bool {
+	if rangeRegex.MatchString(month) {
+		_ = 0
+	} else if singleValueRegex.MatchString(month) {
+		_ = 0
+	} else if listRegex.MatchString(month) {
+		_ = 0
+	} else if month == "*" {
+		_ = 0
+	}
+	return make(map[int]bool) // Placeholder return, should be replaced with actual logic
+	panic(fmt.Sprintf("Invalid month value '%s' in cron expression", month))
+}
+
+func getWeekDays(weekDay string) map[int]bool {
+	if rangeRegex.MatchString(weekDay) {
+		_ = 0
+	} else if singleValueRegex.MatchString(weekDay) {
+		_ = 0
+	} else if listRegex.MatchString(weekDay) {
+		_ = 0
+	} else if weekDay == "*" {
+		_ = 0
+	}
+	return make(map[int]bool) // Placeholder return, should be replaced with actual logic
+	panic(fmt.Sprintf("Invalid week day value '%s' in cron expression", weekDay))
+}
+
+
 // TODO: Implement the specific checks for each cron field
 // Particular checks for each cron field
 func checkMinute(minute string) bool {
@@ -112,6 +181,13 @@ func checkWeekDay(weekDay string) bool {
 }
 
 
+// Exported functions
+
+// CronFromString parses a cron expression string and returns a Cron struct.
+// It panics if the cron expression is invalid.
+// It expects the cron expression to be in the format:
+// "P P P P P" where P can be a single value, a range, a list, an asterisk, or an "* / X" notation.
+// It does not accept month or weekday names.
 func CronFromString(cronString string) Cron {
 	if !checkGeneralCronRegex(cronString) {
 		panic(fmt.Sprintf("Cron expression '%s' doesn't follow general format for cron expressions", cronString))
@@ -146,10 +222,20 @@ func CronFromString(cronString string) Cron {
 	}
 
 	return Cron{
-		minute: minute,
-		hour: hour,
-		monthDay: monthDay,
-		month: month,
-		weekDay: weekDay,
+		mask: cronString,
+		minute: getMinutes(minute),
+		hour: getHours(hour),
+		monthDay: getMonthDays(monthDay, month),
+		month: getMonths(month),
+		weekDay: getWeekDays(weekDay),
 	}
 }
+
+
+// CronMatchesTime checks if a given time matches the cron expression.
+// It takes a Cron struct and the time components (minute, hour, monthDay, month, weekDay) as arguments.
+// It returns true if the time matches the cron expression, false otherwise.
+// TODO: This function is a placeholder and should be implemented with actual logic.
+func CronMatchesTime(cron Cron, minute int, hour int, monthDay int, month int, weekDay int) bool {
+	return true
+}	
